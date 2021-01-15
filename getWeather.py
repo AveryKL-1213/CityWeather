@@ -44,7 +44,7 @@ class CityWeather():
         # 爬取
         for item in bSoup.find("div", {'id': '7d'}).find('ul').find_all('li'):
             date, WeatherInfo = item.find('h1').string, item.find_all('p')
-            weather = WeatherInfo[0].string
+            title = WeatherInfo[0].string
             low_temp = WeatherInfo[1].find("i").string
             if WeatherInfo[1].find('span'):
                 high_temp = WeatherInfo[1].find('span').string
@@ -54,12 +54,12 @@ class CityWeather():
                 'span')['title'], WeatherInfo[2].find('i').string
             if high_temp == '' and day == 0:  # 网页会出现当日天气没有最高温的情况
                 weather = '\n%s \n今日天气：%s\n温度：%s\n风力：%s%s\n' % (
-                    self.cityName, weather, low_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
+                    self.cityName, title, low_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
             elif day == 0:
                 weather = '\n%s \n今日天气：%\n温度：%s  ~ %s\n%s风力：%s\n' % (
-                    self.cityName, weather, low_temp, high_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
+                    self.cityName, title, low_temp, high_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
             else:
-                weather += (date + "\t" + "%.5s" % weather + "\t\t" + low_temp + "  ~ " +
+                weather += (date + "\t" + "%.5s" % title + "\t\t" + low_temp + "  ~ " +
                             high_temp + "\t\t\t" + wind + direction + "\n")
             day += 1
         return weather

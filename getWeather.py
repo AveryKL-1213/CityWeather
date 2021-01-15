@@ -7,9 +7,9 @@ from time import sleep
 
 class CityWeather():
     def __init__(self):
-        self.cityName = ""
+        self.cityName = ""  # 城市名
         self.HEADERS = {  # 设置UA
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 ''(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'}
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15'}
 
     def getcityCode(self):  # 获取城市对应的邮编
         try:
@@ -41,25 +41,26 @@ class CityWeather():
         html.encoding = 'utf-8'
         bSoup = BeautifulSoup(html.text, 'lxml')
         day = 0
+        # 爬取
         for item in bSoup.find("div", {'id': '7d'}).find('ul').find_all('li'):
-            date, detail = item.find('h1').string, item.find_all('p')
-            title = detail[0].string
-            templow = detail[1].find("i").string
-            if detail[1].find('span'):
-                temphigh = detail[1].find('span').string
-            else:
-                temphigh = ''
-            wind, direction = detail[2].find(
-                'span')['title'], detail[2].find('i').string
-            if temphigh == '' and day == 0:  # 网页会出现当日天气没有最高温的情况
+            date, WeatherInfo = item.find('h1').string, item.find_all('p')
+            weather = WeatherInfo[0].string
+            low_temp = WeatherInfo[1].find("i").string
+            if WeatherInfo[1].find('span'):
+                high_temp = WeatherInfo[1].find('span').string
+            else:  # 网页会出现当天没有最高温的情况
+                high_temp = ''
+            wind, direction = WeatherInfo[2].find(
+                'span')['title'], WeatherInfo[2].find('i').string
+            if high_temp == '' and day == 0:  # 网页会出现当日天气没有最高温的情况
                 weather = '\n%s \n今日天气：%s\n温度：%s\n风力：%s%s\n' % (
-                    self.cityName, title, templow, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
+                    self.cityName, weather, low_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
             elif day == 0:
                 weather = '\n%s \n今日天气：%\n温度：%s  ~ %s\n%s风力：%s\n' % (
-                    self.cityName, title, templow, temphigh, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
+                    self.cityName, weather, low_temp, high_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
             else:
-                weather += (date + "\t" + "%.5s" % title + "\t\t" + templow + "  ~ " +
-                            temphigh + "\t\t\t" + wind + direction + "\n")
+                weather += (date + "\t" + "%.5s" % weather + "\t\t" + low_temp + "  ~ " +
+                            high_temp + "\t\t\t" + wind + direction + "\n")
             day += 1
         return weather
 

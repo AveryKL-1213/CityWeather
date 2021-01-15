@@ -1,6 +1,6 @@
-import re
-import json
 import requests
+import json
+import re
 from bs4 import BeautifulSoup
 from time import sleep
 

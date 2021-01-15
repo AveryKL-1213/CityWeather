@@ -11,7 +11,7 @@ class CityWeather():
         self.HEADERS = {  # 设置UA
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15'}
 
-    def getcityCode(self):  # 获取城市对应的邮编
+    def getCityCode(self):  # 获取城市对应的邮编
         try:
             count = 0
             while(True):
@@ -66,11 +66,12 @@ class CityWeather():
 
     def main(self, city):
         self.cityName = city
-        cityCode = self.getcityCode()
+        cityCode = self.getCityCode()
         detail = self.getWeather(cityCode)
         print(detail)
 
 
 if __name__ == "__main__":
     weather = CityWeather()
-    weather.main(city=input('请输入城市名称：'))
+    city = input('请输入城市名称：')
+    weather.main(city)

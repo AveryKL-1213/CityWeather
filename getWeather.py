@@ -28,6 +28,7 @@ class CityWeather():
                     self.cityName = input("请输入正确的城市名(非省级)：")
                 else:
                     self.cityCode = ccode
+                    return
                 count += 1
                 if count > 3:  # 输入错误达上限，退出程序
                     print("连续输入错误城市名5次，系统关闭...")

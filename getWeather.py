@@ -1,6 +1,5 @@
 import requests
 import json
-import re
 from bs4 import BeautifulSoup
 from time import sleep
 
@@ -56,11 +55,11 @@ class CityWeather():
                 weather = '\n%s \n今日天气：%s\n温度：%s\n风力：%s%s\n' % (
                     self.cityName, title, low_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
             elif day == 0:
-                weather = '\n%s \n今日天气：%\n温度：%s  ~ %s\n%s风力：%s\n' % (
-                    self.cityName, title, low_temp, high_temp, wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
+                weather = '\n%s \n今日天气：%s\n温度：%s  ~ %s\n%s风力：%s\n' % (
+                    self.cityName, title, low_temp, high_temp + low_temp[-1], wind, direction) + "\n七日内天气预报：\n日期\t\t天气\t\t\t温度\t\t\t风力\n"
             else:
                 weather += (date + "\t" + "%.5s" % title + "\t\t" + low_temp + "  ~ " +
-                            high_temp + "\t\t\t" + wind + direction + "\n")
+                            high_temp + low_temp[-1] + "\t\t\t" + wind + direction + "\n")
             day += 1
         return weather
 

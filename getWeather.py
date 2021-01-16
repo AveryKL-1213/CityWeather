@@ -7,6 +7,8 @@ from time import sleep
 class CityWeather():
     def __init__(self):
         self.cityName = ""  # 城市名
+        self.cityCode = ""
+        self.WeatherOut = ""  # 输出的天气信息
         self.HEADERS = {  # 设置UA
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15'}
 
@@ -25,7 +27,7 @@ class CityWeather():
                 if ccode == "":  # 确认得到城市的邮编，否则要求用户重新输入
                     self.cityName = input("请输入正确的城市名(非省级)：")
                 else:
-                    return ccode
+                    self.cityCode = ccode
                 count += 1
                 if count > 3:  # 输入错误达上限，退出程序
                     print("连续输入错误城市名5次，系统关闭...")
@@ -34,13 +36,13 @@ class CityWeather():
         except Exception as e:
             print(repr(e))
 
-    def getWeather(self, cityCode):  # 爬取中国天气网对应城市的天气信息
-        url = 'http://www.weather.com.cn/weather/%s.shtml' % cityCode
+    def getWeather(self):  # 爬取中国天气网对应城市的天气信息
+        url = 'http://www.weather.com.cn/weather/%s.shtml' % self.cityCode
         html = requests.get(url, headers=self.HEADERS)
         html.encoding = 'utf-8'
         bSoup = BeautifulSoup(html.text, 'lxml')
         day = 0
-        # 爬取
+        # 循环爬取每天的天气信息
         for item in bSoup.find("div", {'id': '7d'}).find('ul').find_all('li'):
             date, WeatherInfo = item.find('h1').string, item.find_all('p')
             title = WeatherInfo[0].string
@@ -61,16 +63,16 @@ class CityWeather():
                 weather += (date + "\t" + "%.5s" % title + "\t\t" + low_temp + "  ~ " +
                             high_temp + low_temp[-1] + "\t\t\t" + wind + direction + "\n")
             day += 1
-        return weather
+        self.WeatherOut = weather
 
-    def main(self, city):
+    def cityWeather(self, city):
         self.cityName = city
-        cityCode = self.getCityCode()
-        detail = self.getWeather(cityCode)
-        print(detail)
+        self.getCityCode()
+        self.getWeather()
+        print(self.WeatherOut)
 
 
 if __name__ == "__main__":
     weather = CityWeather()
     city = input('请输入城市名称：')
-    weather.main(city)
+    weather.cityWeather(city)
